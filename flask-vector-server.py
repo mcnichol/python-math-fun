@@ -40,7 +40,7 @@ class Vector(object):
     try:
       if not coordinates:
         raise ValueError
-      self.coordinates = tuple(coordinates)
+      self.coordinates = tuple([float("{0:3f}".format(v)) for v in coordinates])
       self.dimension = len(coordinates)
     except ValueError:
       raise ValueError('The coordinates must be nonempty')
