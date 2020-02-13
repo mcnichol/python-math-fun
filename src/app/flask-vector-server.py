@@ -2,7 +2,6 @@ import os
 
 from flask import Flask, escape, request, redirect, url_for
 
-from vector import *
 
 app = Flask(__name__)
 port = int(os.environ.get("PORT", 8080))
