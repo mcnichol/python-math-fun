@@ -18,8 +18,8 @@ def add():
   vector1 = request.args.get("vector1", 0)
   vector2 = request.args.get("vector2", 0)
 
-  vec1 = Vector(list(map(int, vector1.split(","))))
-  vec2 = Vector(list(map(int, vector2.split(","))))
+  vec1 = Vector(list(map(float, vector1.split(","))))
+  vec2 = Vector(list(map(float, vector2.split(","))))
     
   return str(vec1 + vec2)
 
