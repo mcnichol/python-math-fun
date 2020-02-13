@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask, escape, request, redirect, url_for
+from app.math.vector import Vector
 
 
 app = Flask(__name__)
@@ -46,7 +47,7 @@ def multiply():
     scalar = float(request.args.get("scalar", 1))
     vector_arg = request.args.get("vector", 0)
 
-    vector = vector(list(map(float, vector_arg.split(","))))
+    vector = Vector(list(map(float, vector_arg.split(","))))
 
     return str(vector * scalar)
 
