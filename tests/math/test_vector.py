@@ -1,4 +1,4 @@
-from app.math.vector import *
+from src.app.math.vector import Vector
 
 
 def test_vector_adds():
