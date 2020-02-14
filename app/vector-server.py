@@ -10,9 +10,11 @@ port = int(os.environ.get("PORT", 8080))
 
 @app.route('/')
 def hello():
-    name = request.args.get("name", "World")
+    name = escape(request.args.get("name", "World"))
 
-    return f'Hello, {escape(name)}!'
+    return f"Hello {name}, I'm a Vector Web Service!\n" \
+           f"Send me a Vector to /add /subtract or /multiply\n\n" \
+           f"curl'localhost:8080/add?vector1=1,2,3&vector2=1,2,3'\n"
 
 
 @app.route('/add')
@@ -50,6 +52,15 @@ def multiply():
     vector = Vector(list(map(float, vector_arg.split(","))))
 
     return str(vector * scalar)
+
+
+@app.route('magnitude')
+def magnitude():
+    vector = request.args.get("vector", 0)
+
+    vec = Vector(list(map(float, vector.split(","))))
+
+    return vec.magnitude()
 
 
 if __name__ == '__main__':
