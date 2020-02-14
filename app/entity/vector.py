@@ -1,3 +1,6 @@
+import math
+
+
 class Vector(object):
 
     def __init__(self, coordinates):
@@ -26,3 +29,11 @@ class Vector(object):
 
     def __eq__(self, v):
         return self.coordinates == v.coordinates
+
+    def magnitude(self):
+        magnitude = math.sqrt(sum([x ** 2 for x in self.coordinates]))
+
+        return float("{0:.3f}".format(magnitude))
+
+    def normalized(self):
+        return Vector(self.coordinates) * (1 / self.magnitude())

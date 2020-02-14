@@ -29,3 +29,21 @@ def test_vector_multiplies_on_scalars():
 
     expected = Vector([5, 10, 15])
     assert actual == expected
+
+
+def test_get_vector_magnitude():
+    vector = Vector([-0.221, 7.437])
+
+    actual = vector.magnitude()
+
+    expected = 7.44
+    assert actual == expected
+
+
+def test_get_vector_normalized():
+    vector = Vector([5.581, -2.136])
+
+    actual = vector.normalized()
+
+    expected = Vector([.934, -0.357])
+    assert actual == expected
