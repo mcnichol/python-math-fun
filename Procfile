@@ -1,1 +1,1 @@
-web: python src/app/flask-vector-server.py
+web: python app/flask-vector-server.py

@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask, escape, request, redirect, url_for
-from app.math.vector import Vector
+from entity.vector import Vector
 
 
 app = Flask(__name__)
