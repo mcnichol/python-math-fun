@@ -1,8 +1,8 @@
 import os
 
 from flask import Flask, escape, request, redirect, url_for
-from entity.vector import Vector
 
+from entity.vector import Vector
 
 app = Flask(__name__)
 port = int(os.environ.get("PORT", 8080))
