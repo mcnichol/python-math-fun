@@ -4,11 +4,13 @@ import math
 class Vector(object):
 
     def __init__(self, coordinates):
+        self.CANNOT_NORMALIIZE_ZERO_VECTOR_MSG = "Cannot normalize a zero vector"
+
         try:
             if not coordinates:
                 raise ValueError
 
-            self.coordinates = tuple([float("{0:.3f}".format(v)) for v in coordinates])
+            self.coordinates = tuple([float(v) for v in coordinates])
             self.dimension = len(coordinates)
         except ValueError:
             raise ValueError('The coordinates must be nonempty')
@@ -25,18 +27,41 @@ class Vector(object):
         return self.__class__(list([scalar * x for x in self.coordinates]))
 
     def __str__(self):
-        return 'Vector: {}'.format(self.coordinates)
+        return 'Vector {}'.format(self.coordinates)
 
     def __repr__(self):
-        return 'Vector: {}'.format(self.coordinates)
+        return 'Vector {}'.format(self.coordinates)
 
     def __eq__(self, v):
         return self.coordinates == v.coordinates
 
     def magnitude(self):
-        magnitude = math.sqrt(sum([x ** 2 for x in self.coordinates]))
-
-        return float("{0:.3f}".format(magnitude))
+        return math.sqrt(sum([x ** 2 for x in self.coordinates]))
 
     def normalized(self):
-        return Vector(self.coordinates) * (1 / self.magnitude())
+        try:
+            return Vector(self.coordinates) * (1 / self.magnitude())
+        except ZeroDivisionError:
+            raise Exception(self.CANNOT_NORMALIIZE_ZERO_VECTOR_MSG)
+
+    def dot(self, other):
+        return sum([x * y for x, y in zip(self.coordinates, other.coordinates)])
+
+    def angle_with(self, other, in_degrees=False):
+        try:
+            u1 = self.normalized()
+            u2 = other.normalized()
+            dot_product = u1.dot(u2)
+
+            radians = math.acos(dot_product)
+
+            if in_degrees:
+                return radians * (180 / math.pi)
+            else:
+                return radians
+
+        except Exception as e:
+            if str(e) == self.CANNOT_NORMALIIZE_ZERO_VECTOR_MSG:
+                raise Exception('Cannot compute an angle with the zero vector')
+            else:
+                raise e
