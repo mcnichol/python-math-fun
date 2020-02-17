@@ -14,7 +14,7 @@ def hello():
 
     return f"Hello {name}, I'm a Vector Web Service!\n" \
            f"Send me a Vector to /add /subtract or /multiply\n\n" \
-           f"curl'localhost:8080/add?vector1=1,2,3&vector2=1,2,3'\n"
+           f"curl'{{domain.com}}/add?vector1=1,2,3&vector2=1,2,3'\n"
 
 
 @app.route('/add')
@@ -54,7 +54,7 @@ def multiply():
     return str(vector * scalar)
 
 
-@app.route('magnitude')
+@app.route('/magnitude')
 def magnitude():
     vector = request.args.get("vector", 0)
 
