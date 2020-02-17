@@ -2,66 +2,36 @@ import os
 
 from flask import Flask, escape, request, redirect, url_for
 
-from entity.vector import Vector
+# from entity.vector import Vector
 
-app = Flask(__name__)
-port = int(os.environ.get("PORT", 8080))
-
-
-@app.route('/')
-def hello():
-    name = escape(request.args.get("name", "World"))
-
-    return f"Hello {name}, I'm a Vector Web Service!\n" \
-           f"Send me a Vector to /add /subtract or /multiply\n\n" \
-           f"curl'{{domain.com}}/add?vector1=1,2,3&vector2=1,2,3'\n"
+# myapp = Flask(__name__)
+# port = int(os.environ.get("PORT", 8080))
 
 
-@app.route('/add')
-def add():
-    vector1 = request.args.get("vector1", 0)
-    vector2 = request.args.get("vector2", 0)
+def create_app(test_config=None):
+    app = Flask(__name__, instance_relative_config=True)
 
-    vec1 = Vector(list(map(float, vector1.split(","))))
-    vec2 = Vector(list(map(float, vector2.split(","))))
+    app.config.from_mapping(
+        SECRET_KEY='dev',
+        DATABASE=os.path.join(app.instance_path,'flask.sqlite')
+    )
 
-    return str(vec1 + vec2)
+    if test_config is None:
+        app.config.from_pyfile('config.py', silent=True)
+    else:
+        app.config.from_mapping(test_config)
 
+    try:
+        os.makedirs(app.instance_path)
+    except OSError:
+        pass
 
-@app.route('/sub')
-def sub():
-    vector1 = request.args.get("vector1", 0)
-    vector2 = request.args.get("vector2", 0)
+    @app.route('/')
+    def hello():
+        name = escape(request.args.get("name", "World"))
 
-    vec1 = Vector(list(map(float, vector1.split(","))))
-    vec2 = Vector(list(map(float, vector2.split(","))))
+        return f"Hello {name}, I'm a Vector Web Service!\n" \
+               f"Send me a Vector to /add /subtract or /multiply\n\n" \
+               f"curl'{{domain.com}}/add?vector1=1,2,3&vector2=1,2,3'\n"
 
-    return str(vec1 - vec2)
-
-
-@app.route('/subtract')
-def subtract():
-    return redirect(url_for("sub", **request.args))
-
-
-@app.route('/multiply')
-def multiply():
-    scalar = float(request.args.get("scalar", 1))
-    vector_arg = request.args.get("vector", 0)
-
-    vector = Vector(list(map(float, vector_arg.split(","))))
-
-    return str(vector * scalar)
-
-
-@app.route('/magnitude')
-def magnitude():
-    vector = request.args.get("vector", 0)
-
-    vec = Vector(list(map(float, vector.split(","))))
-
-    return vec.magnitude()
-
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=port)
+    return app
