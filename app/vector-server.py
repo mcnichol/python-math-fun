@@ -2,14 +2,21 @@ import os
 
 from flask import Flask, escape, request, redirect, url_for
 
+from db import db
 from entity.vector import Vector
 
 app = Flask(__name__)
 port = int(os.environ.get("PORT", 8080))
 
 
+@app.before_first_request
+def init_app():
+    db.init_db()
+
+
 @app.route('/')
 def hello():
+    # db.get_users()
     name = escape(request.args.get("name", "World"))
 
     return f"Hello {name}, I'm a Vector Web Service!\n" \
