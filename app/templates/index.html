@@ -1,0 +1,13 @@
+<html style="height: 100%; display: grid">
+<body style="height: 100%; display: grid">
+<div style="margin: auto">
+    <form action="/" method="post">
+        <div><h1>Hello {{ person|default("World", true) }} </h1></div>
+        <div>
+            <input type="text" name="update_person_text" placeholder="Enter Name"/><input type="submit" value="update" name="update_person_button"/>
+        </div>
+
+    </form>
+</div>
+</body>
+</html>

@@ -1,65 +1,51 @@
+import os
 import mysql.connector
+import json
 
 from flask import g
 
 
 def init_db():
     print("Initialization")
-    db = get_db().cursor()
+    db = get_db()
+    cursor = db.cursor()
 
     try:
         print("Dropping table if exists")
-        db.execute("""DROP TABLE IF EXISTS user;""")
-        print("Creating User Table")
-        db.execute("""CREATE TABLE user ( 
-                             Id int(11) NOT NULL,
-                             name varchar(250) NOT NULL,
-                             password varchar(250) NOT NULL,
-                             PRIMARY KEY (Id));""")
-        print("Initializing User Table")
-        db.execute("""INSERT INTO user (Id, name, password) 
-                           VALUES 
-                           (1, 'name', "password") """)
+        cursor.execute("""DROP TABLE IF EXISTS message;""")
+        db.commit()
     except mysql.connector.Error as err:
-        print("Failed creating database: {}".format(err))
+        print("No Need to drop, Table doesn't exist: {}".format(err))
 
-    # with open(os.path.join(os.path.dirname(__file__), 'schema.sql'), 'r') as f:
-    #     db.execute(f.read())
+    try:
+        print("Creating Message Table")
+        cursor.execute("""CREATE TABLE message ( 
+                             Id int(11) NOT NULL AUTO_INCREMENT,
+                             message varchar(250) NOT NULL,
+                             PRIMARY KEY (Id));""")
+        db.commit()
+    except mysql.connector.Error as err:
+        print("Failed creating table: {}".format(err))
 
-
-    # resultset = cursor.fetchall()
-    # for user in resultset:
-    #     print(tuple(user))
-    #
-    # db.execute(
-    #     'INSERT INTO user (username, password) VALUES (?, ?)',
-    #     ("root", "toor")
-    # )
-    #
-    # db.execute(
-    #     'INSERT INTO user (username, password) VALUES (?, ?)',
-    #     ("username2", "password2")
-    # )
-    #
-    # db.commit()
+    try:
+        print("Initializing Message Table")
+        cursor.execute("""INSERT INTO message (message) VALUES ('Michael') """)
+        db.commit()
+    except mysql.connector.Error as err:
+        print("Failed inserting into table: {}".format(err))
 
 
-def get_users():
+def get_message():
     cursor = get_db().cursor()
-    cursor.execute("SELECT * FROM user;")
+    cursor.execute("SELECT * FROM message;")
     resultset = cursor.fetchall()
-    print("Getting results")
-    for user in resultset:
-        print(tuple(user))
+    print("Returning {} result(s)".format(len(resultset)))
+    return resultset
 
 
 def get_db():
+
     config = {
-        # 'user': os.environ.get("username"),
-        # 'password': os.environ.get("password"),
-        # 'host': os.environ.get("hostname"),
-        # 'database': os.environ.get("name"),
-        # 'raise_on_warnings': True
         'user': 'b46940c5b20663',
         'password': '62d0dde5',
         'host': 'us-cdbr-iron-east-04.cleardb.net',
@@ -67,14 +53,17 @@ def get_db():
         'raise_on_warnings': True
     }
 
-
     if 'db' not in g:
-        # Check if Local Development
-        #g.db = sqlite3.connect(
-        #    "app/db/mydatabase.db"
-        #)
-        #g.db.row_factory = sqlite3.Row
         g.db = mysql.connector.connect(**config)
 
-
     return g.db
+
+
+def update_message(update_msg):
+    print(update_msg)
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute(f"INSERT INTO message (message) VALUES ('{update_msg}')")
+    db.commit()
+
+    return True

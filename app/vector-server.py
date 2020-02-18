@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, escape, request, redirect, url_for
+from flask import Flask, request, redirect, url_for, render_template
 
 from db import db
 from entity.vector import Vector
@@ -14,14 +14,14 @@ def init_app():
     db.init_db()
 
 
-@app.route('/')
-def hello():
-    # db.get_users()
-    name = escape(request.args.get("name", "World"))
+@app.route('/', methods=['GET', 'POST'])
+def index():
 
-    return f"Hello {name}, I'm a Vector Web Service!\n" \
-           f"Send me a Vector to /add /subtract or /multiply\n\n" \
-           f"curl'{{domain.com}}/add?vector1=1,2,3&vector2=1,2,3'\n"
+    if request.method == 'POST':
+        db.update_message(request.form.get('update_person_text'))
+    results = db.get_message()
+
+    return render_template("index.html", person=tuple(results)[len(results) - 1][1])
 
 
 @app.route('/add')
