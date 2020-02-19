@@ -16,7 +16,6 @@ def init_app():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-
     if request.method == 'POST':
         db.update_message(request.form.get('update_person_text'))
     results = db.get_message()

@@ -1,8 +1,14 @@
-import os
-import mysql.connector
 import json
+import os
+import sqlite3
 
+import mysql.connector
 from flask import g
+
+DB_PROFILE = 'local'
+
+if os.environ.get("VCAP_SERVICES") is not None:
+    DB_PROFILE = 'cloud'
 
 
 def init_db():
@@ -19,6 +25,7 @@ def init_db():
 
     try:
         print("Creating Message Table")
+        
         cursor.execute("""CREATE TABLE message ( 
                              Id int(11) NOT NULL AUTO_INCREMENT,
                              message varchar(250) NOT NULL,
@@ -29,7 +36,7 @@ def init_db():
 
     try:
         print("Initializing Message Table")
-        cursor.execute("""INSERT INTO message (message) VALUES ('Michael') """)
+        cursor.execute("""INSERT INTO message (message) VALUES ('Exelon') """)
         db.commit()
     except mysql.connector.Error as err:
         print("Failed inserting into table: {}".format(err))
@@ -44,17 +51,24 @@ def get_message():
 
 
 def get_db():
-
-    config = {
-        'user': 'b46940c5b20663',
-        'password': '62d0dde5',
-        'host': 'us-cdbr-iron-east-04.cleardb.net',
-        'database': 'ad_b4f194586b2f30d',
-        'raise_on_warnings': True
-    }
-
     if 'db' not in g:
-        g.db = mysql.connector.connect(**config)
+
+        if os.environ.get("VCAP_SERVICES") is not None:
+            services = os.environ.get("VCAP_SERVICES")
+            json_services = json.loads(services)
+            credentials = json_services["cleardb"][0]["credentials"]
+
+            config = {
+                'user': credentials["username"],
+                'password': credentials["password"],
+                'host': credentials["hostname"],
+                'database': credentials["name"],
+            }
+            g.db = mysql.connector.connect(**config)
+
+        else:
+            print("Running Local")
+            g.db = sqlite3.connect("mydb.db")
 
     return g.db
 
