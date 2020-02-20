@@ -25,18 +25,30 @@ def init_db():
 
     try:
         print("Creating Message Table")
-        
-        cursor.execute("""CREATE TABLE message ( 
-                             Id int(11) NOT NULL AUTO_INCREMENT,
-                             message varchar(250) NOT NULL,
-                             PRIMARY KEY (Id));""")
-        db.commit()
-    except mysql.connector.Error as err:
-        print("Failed creating table: {}".format(err))
+
+        if DB_PROFILE == 'cloud':
+            print("Connecting to MySQL")
+            mysql_table = """CREATE TABLE message ( 
+                                 Id int(11) NOT NULL AUTO_INCREMENT,
+                                 message varchar(250) NOT NULL,
+                                 PRIMARY KEY (Id));"""
+            cursor.execute(mysql_table)
+            db.commit()
+        else:
+            print("Connecting to local db")
+            sqlite_table = """CREATE TABLE message (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                message TEXT NOT NULL,
+                created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
+            """
+            cursor.execute(sqlite_table)
+            db.commit()
+    except Exception as e:
+        print("Failed creating table: {}".format(e))
 
     try:
         print("Initializing Message Table")
-        cursor.execute("""INSERT INTO message (message) VALUES ('Exelon') """)
+        cursor.execute("""INSERT INTO message (message) VALUES ('McNichol') """)
         db.commit()
     except mysql.connector.Error as err:
         print("Failed inserting into table: {}".format(err))
@@ -53,7 +65,7 @@ def get_message():
 def get_db():
     if 'db' not in g:
 
-        if os.environ.get("VCAP_SERVICES") is not None:
+        if DB_PROFILE == 'cloud':
             services = os.environ.get("VCAP_SERVICES")
             json_services = json.loads(services)
             credentials = json_services["cleardb"][0]["credentials"]
@@ -67,7 +79,7 @@ def get_db():
             g.db = mysql.connector.connect(**config)
 
         else:
-            print("Running Local")
+            print("Running Local Database")
             g.db = sqlite3.connect("mydb.db")
 
     return g.db
