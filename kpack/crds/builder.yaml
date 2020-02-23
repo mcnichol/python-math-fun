@@ -1,0 +1,10 @@
+apiVersion: build.pivotal.io/v1alpha1
+kind: Builder 
+metadata:
+  name: my-builder
+  namespace: my-namespace
+spec:
+  image: cloudfoundry/cnb:bionic
+  imagePullSecrets:                 # Optional if using private registry
+  - name: private-registry-secret 
+  updatePolicy: polling|external 
