@@ -3,7 +3,7 @@ __pycache__
 venv/
 *.pyc
 __pycache__/
-
+.envrc
 instance/
 
 .pytest_cache/
