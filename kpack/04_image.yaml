@@ -1,15 +1,15 @@
 apiVersion: build.pivotal.io/v1alpha1
 kind: Image
 metadata:
-  name: tutorial-image
+  name: python-fun
 spec:
-  tag: mcnichol/petclinic
-  serviceAccount: tutorial-service-account
+  tag: mcnichol/python-fun
+  serviceAccount: kpack-demo-sa
   cacheSize: "1.5Gi"
   builder:
     name: default
     kind: ClusterBuilder
   source:
     git:
-      url: https://github.com/spring-projects/spring-petclinic
-      revision: 82cb521d636b282340378d80a6307a08e3d4a4c4
+      url: https://github.com/mcnichol/python-math-fun
+      revision: master
