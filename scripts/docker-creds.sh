@@ -1,11 +1,14 @@
 #!/bin/bash
 
-set -eu
+set -e
 
 # set username and password
-echo "Use with DOCKER_USER={username} DOCKER_PASS={password} docker-creds.sh"
+
 UNAME="$DOCKER_USER"
 UPASS="$DOCKER_PASS"
+if [ -z "$UNAME" ]; then
+    echo "Use with DOCKER_USER={username} DOCKER_PASS={password} docker-creds.sh"
+fi
 
 # get token to be able to talk to Docker Hub
 TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d '{"username": "'${UNAME}'", "password": "'${UPASS}'"}' https://hub.docker.com/v2/users/login/ | jq -r .token)
@@ -21,7 +24,6 @@ for i in ${REPO_LIST}
 do
   # get tags for repo
   IMAGE_TAGS=$(curl -s -H "Authorization: JWT ${TOKEN}" https://hub.docker.com/v2/repositories/${UNAME}/${i}/tags/?page_size=10000 | jq -r '.results|.[]|.name')
-
   # build a list of images from tags
   for j in ${IMAGE_TAGS}
   do
