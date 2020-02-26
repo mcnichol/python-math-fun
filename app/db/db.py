@@ -28,7 +28,7 @@ def init_db():
 
         if DB_PROFILE == 'cloud':
             print("Connecting to MySQL")
-            mysql_table = """CREATE TABLE message ( 
+            mysql_table = """CREATE TABLE message (
                                  Id int(11) NOT NULL AUTO_INCREMENT,
                                  message varchar(250) NOT NULL,
                                  PRIMARY KEY (Id));"""
@@ -48,7 +48,7 @@ def init_db():
 
     try:
         print("Initializing Message Table")
-        cursor.execute("""INSERT INTO message (message) VALUES ('McNichol') """)
+        cursor.execute("""INSERT INTO message (message) VALUES ('Reid') """)
         db.commit()
     except mysql.connector.Error as err:
         print("Failed inserting into table: {}".format(err))
