@@ -48,7 +48,7 @@ def init_db():
 
     try:
         print("Initializing Message Table")
-        cursor.execute("""INSERT INTO message (message) VALUES ('Reid') """)
+        cursor.execute("""INSERT INTO message (message) VALUES ('World') """)
         db.commit()
     except mysql.connector.Error as err:
         print("Failed inserting into table: {}".format(err))
